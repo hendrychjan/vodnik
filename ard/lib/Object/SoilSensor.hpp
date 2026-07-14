@@ -1,17 +1,21 @@
 #pragma once
 
 #include "Arduino.h"
+#include "IOObject.hpp"
 
-class SoilSensor {
+class SoilSensor : public IOObject {
  public:
-  SoilSensor(const char* name, uint8_t pin) : pin(pin), name(name) {
-    pinMode(pin, INPUT);
-  }
+  SoilSensor(uint8_t pin, int targetValue)
+      : _pin(pin), _targetValue(targetValue), _value(0) {}
 
-  float getHumidityPercent(bool print);
+  void setup() override;
+
+  void refresh();
+  int getValueCached();
+  bool isBelowTarget();
 
  private:
-  const char* name;
-  float humidityPercent = 100.;
-  uint8_t pin;
+  uint8_t _pin;
+  int _targetValue;
+  int _value;
 };

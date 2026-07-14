@@ -1,21 +1,23 @@
 #pragma once
 
-enum OperationMode {
-  Automatic,
-  Override,
-};
-
-template<typename T>
-struct Device {
-  const char* label;
-  T device;
-};
+#include "../Config.hpp"
+#include "Arduino.h"
 
 class StateService {
  public:
-  OperationMode getMode();
-  void setMode(OperationMode mode);
+  bool isReservoirEmpty = false;
+  bool pumpsActivated[Config::NUMBER_OF_PUMPS] = {
+      false,
+      false,
+      false,
+  };
+
+  bool pumpsCycleQueued[Config::NUMBER_OF_PUMPS] = {
+      false,
+      false,
+      false,
+  };
 
  private:
-  OperationMode _mode;
+  void _clearPumpCycles();
 };

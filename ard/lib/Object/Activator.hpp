@@ -1,18 +1,17 @@
 #pragma once
 
 #include "Arduino.h"
+#include "IOObject.hpp"
 
-class Activator {
+class Activator : public IOObject {
  public:
-  Activator(uint8_t pin, bool initial = false) : _pin(pin), _isOn(initial) {
-    pinMode(_pin, OUTPUT);
-    digitalWrite(_pin, _isOn ? HIGH : LOW);
-  }
+  Activator(uint8_t pin, bool initialState = false)
+      : _pin(pin), _isOn(initialState) {}
 
-  void toggleOn();
-  void toggleOff();
+  void setup() override;
 
   bool isOn();
+  bool toggle(bool isActive);
 
  private:
   uint8_t _pin;

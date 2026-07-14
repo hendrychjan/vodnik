@@ -6,12 +6,11 @@
 
 class SerialService : public IOService {
  public:
-  SerialService(StateService stateService) : _stateService(stateService) {
-    Serial.begin(9600);
-  }
+  SerialService(StateService& stateService) : _stateService(stateService) {}
 
+  void setup() override;
   void hook() override;
 
  private:
-  StateService _stateService;
+  StateService& _stateService;
 };

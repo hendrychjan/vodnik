@@ -1,14 +1,9 @@
 #include "SoilSensor.hpp"
 
-float SoilSensor::getHumidityPercent(bool print = false) {
-  const int value = analogRead(pin);
+void SoilSensor::setup() { pinMode(_pin, INPUT); }
 
-  humidityPercent = 100.;
+int SoilSensor::getValueCached() { return _value; }
 
-  if (print) {
-    Serial.print("pot ");
-    Serial.print(name);
-    Serial.print(" ");
-    Serial.print(humidityPercent);
-  }
-}
+void SoilSensor::refresh() { _value = analogRead(_pin); }
+
+bool SoilSensor::isBelowTarget() { return _value < _targetValue; }
