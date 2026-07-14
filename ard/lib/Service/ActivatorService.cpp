@@ -7,17 +7,17 @@ void printPumpState(uint8_t index, bool state) {
 }
 
 void ActivatorService::setup() {
-  _isAutomaticEnabledLED.setup();
+  _reservoirHasWaterLED.setup();
 
   for (auto& pumpRelay : _pumpRelays) pumpRelay.setup();
 }
 
 void ActivatorService::hook() {
-  _isAutomaticEnabledLED.toggle(_stateService.getMode() == AUTOMATIC);
+  _reservoirHasWaterLED.toggle(!_stateService.isReservoirEmpty());
 
   for (uint8_t i = 0; i < Config::NUMBER_OF_PUMPS; i++) {
-    bool shouldActivate = _stateService.pumpsActivated[i];
-    bool pumpStateChanged = _pumpRelays[i].toggle(shouldActivate);
-    if (pumpStateChanged) printPumpState(i, shouldActivate);
+    bool shouldRun = _stateService.shouldPumpRun(i);
+    bool pumpStateChanged = _pumpRelays[i].toggle(shouldRun);
+    if (pumpStateChanged) printPumpState(i, shouldRun);
   }
 }

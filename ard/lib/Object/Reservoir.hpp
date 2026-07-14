@@ -1,25 +1,19 @@
 #pragma once
 
+#include "../Config.hpp"
 #include "Arduino.h"
 #include "IOObject.hpp"
 
 class Reservoir : public IOObject {
  public:
-  Reservoir(uint8_t echoPin, uint8_t triggerPin, int emptyDistanceCm)
-      : _echoPin(echoPin),
-        _triggerPin(triggerPin),
-        _emptyDistanceCm(emptyDistanceCm),
-        _distanceCm(0) {}
+  Reservoir(uint8_t echoPin, uint8_t triggerPin)
+      : _echoPin(echoPin), _triggerPin(triggerPin) {}
 
   void setup() override;
 
-  void refresh();
-  int getDistanceCached();
-  bool isEmpty();
+  unsigned long getDistanceCm();
 
  private:
   uint8_t _echoPin;
   uint8_t _triggerPin;
-  int _emptyDistanceCm;
-  int _distanceCm;
 };

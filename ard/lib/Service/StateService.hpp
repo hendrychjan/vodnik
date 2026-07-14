@@ -2,22 +2,42 @@
 
 #include "../Config.hpp"
 #include "Arduino.h"
+#include "IOService.hpp"
 
-class StateService {
+class StateService : public IOService {
  public:
-  bool isReservoirEmpty = false;
-  bool pumpsActivated[Config::NUMBER_OF_PUMPS] = {
-      false,
-      false,
-      false,
-  };
+  void setup() override;
+  void hook() override;
 
-  bool pumpsCycleQueued[Config::NUMBER_OF_PUMPS] = {
-      false,
-      false,
-      false,
-  };
+  const bool isReservoirEmpty();
+  const void setReservoirEmpty(bool isEmpty);
+
+  void setSensorsToRefreshNow();
+  bool shouldReservoirSensorRefresh();
+  bool shouldSoilSensorsRefresh();
+
+  void clearAllPumpsTimeQueued();
+  void clearPumpTimeQueued(uint8_t index);
+  const bool shouldPumpRun(uint8_t index);
+  void queuePumpCycle(uint8_t index);
+  void queuePumpInfiniteCycle(uint8_t index);
 
  private:
-  void _clearPumpCycles();
+  void _subtractElapsed(unsigned long& value, unsigned long elapsedMs);
+
+  void _queuePumpTime(uint8_t index, unsigned long time);
+
+  bool _isReservoirEmpty = false;
+  unsigned long _lastHookMs = 0;
+
+  unsigned long _reservoirTimeToRefreshMs =
+      Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC * 1000;
+  unsigned long _soilSensorsTimeToRefreshMs =
+      Config::SOIL_SENSOR_READ_INTERVAL_SEC * 1000;
+
+  unsigned long _pumpsTimeQueuedMs[Config::NUMBER_OF_PUMPS] = {
+      0,
+      0,
+      0,
+  };
 };

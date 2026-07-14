@@ -2,7 +2,8 @@
 
 void SerialService::setup() {}
 
-static void handleCommand(const String& atCommand, StateService& stateService) {
+void SerialService::_handleCommand(const String& atCommand,
+                                   StateService& stateService) {
   if (atCommand.startsWith("pump ")) {
     // "pump <index> <state>"  e.g. "pump 2 1"
     const String args = atCommand.substring(5);
@@ -12,18 +13,15 @@ static void handleCommand(const String& atCommand, StateService& stateService) {
     const uint8_t index = args.substring(0, spaceIdx).toInt();
     const bool state = args.substring(spaceIdx + 1).toInt() != 0;
 
-    if (index < Config::NUMBER_OF_PUMPS) {
-      stateService.pumpsActivated[index] = state;
+    if (state) {
+      _stateService.queuePumpInfiniteCycle(index);
+    } else {
+      _stateService.clearPumpTimeQueued(index);
     }
-  } else if (atCommand.startsWith("mode ")) {
-    // "mode <value>"  1 = automatic, 2 = override
-    const int value = atCommand.substring(5).toInt();
-
-    if (value == 1) {
-      stateService.setMode(AUTOMATIC);
-    } else if (value == 2) {
-      stateService.setMode(OVERRIDE);
-    }
+  } else if (atCommand.startsWith("refresh")) {
+    _stateService.setSensorsToRefreshNow();
+  } else if (atCommand.startsWith("stop")) {
+    _stateService.clearAllPumpsTimeQueued();
   }
 }
 
@@ -36,7 +34,7 @@ void SerialService::hook() {
     if (ch == '\n' || ch == '\r') {
       inputBuffer.trim();
       if (inputBuffer.length() > 0) {
-        handleCommand(inputBuffer, _stateService);
+        _handleCommand(inputBuffer, _stateService);
       }
       inputBuffer = "";
       continue;

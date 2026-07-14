@@ -13,4 +13,6 @@ class SerialService : public IOService {
 
  private:
   StateService& _stateService;
+
+  void _handleCommand(const String& atCommand, StateService& stateService);
 };

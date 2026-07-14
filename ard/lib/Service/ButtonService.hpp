@@ -18,7 +18,8 @@ class ButtonService : public IOService {
  private:
   StateService& _stateService;
 
-  Button _modeSwitchButton{Config::PIN_BUTTON_MODE};
+  Button _stopAllPumpsButton{Config::PIN_BUTTON_STOP_PUMPS};
+  Button _refreshSensorsButton{Config::PIN_BUTTON_REFRESH_SENSORS};
   Button _pumpOverrideButtons[Config::NUMBER_OF_PUMPS] = {
       Button(Config::PIN_BUTTON_PUMP_1_OVERRIDE),
       Button(Config::PIN_BUTTON_PUMP_2_OVERRIDE),
