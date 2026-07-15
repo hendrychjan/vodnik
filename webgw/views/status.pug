@@ -1,0 +1,67 @@
+doctype html
+html
+  head
+    title Status
+    style.
+      body { font-family: sans-serif; }
+      .ok { color: green; }
+      .bad { color: red; }
+
+  body
+    h1 Vodnik Status
+
+    h2 Services
+
+    table(border="1" cellpadding="5")
+      tr
+        th Component
+        th Status
+
+      tr
+        td MQTT
+        td(class=mqtt ? 'ok' : 'bad')
+          = mqtt ? 'OK' : 'DOWN'
+
+      tr
+        td Serial
+        td(class=serial ? 'ok' : 'bad')
+          = serial ? 'OK' : 'DOWN'
+
+    h2 Reservoir
+
+    p
+      strong Distance:
+      |  #{vodnik.reservoir}
+
+    h2 Pumps
+
+    table(border="1" cellpadding="5")
+      tr
+        th Index
+        th State
+
+      each pumpState, index in vodnik.pumps
+        tr
+          td= index
+          td= pumpState
+
+    h2 Soil Sensors
+
+    table(border="1" cellpadding="5")
+      tr
+        th Index
+        th Value
+
+      each sensorValue, index in vodnik.soilSensors
+        tr
+          td= index
+          td= sensorValue
+
+    h2 Arduino Errors
+
+    if vodnik.ardErrors.length === 0
+      p No errors.
+    else
+      ul
+        each err in vodnik.ardErrors
+          li= err
