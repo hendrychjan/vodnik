@@ -13,6 +13,7 @@ void printReservoirDistance(unsigned long distanceCm) {
 }
 
 void SensorService::setup() {
+  _reservoir.setup();
   for (auto& sensor : _soilSensors) sensor.setup();
 }
 

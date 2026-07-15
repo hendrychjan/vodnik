@@ -15,8 +15,15 @@ void StateService::hook() {
   _subtractElapsed(_reservoirTimeToRefreshMs, elapsedMs);
   _subtractElapsed(_soilSensorsTimeToRefreshMs, elapsedMs);
 
-  for (uint8_t i = 0; i < Config::NUMBER_OF_PUMPS; i++)
-    _subtractElapsed(_pumpsTimeQueuedMs[i], elapsedMs);
+  if (_activePumpIndex >= 0) {
+    _subtractElapsed(_pumpsTimeQueuedMs[_activePumpIndex], elapsedMs);
+
+    if (_pumpsTimeQueuedMs[_activePumpIndex] == 0) {
+      _activePumpIndex = -1;
+    }
+  }
+
+  _promoteHighestPriorityPumpIfIdle();
 }
 
 void StateService::_subtractElapsed(unsigned long& value,
@@ -29,9 +36,9 @@ void StateService::_subtractElapsed(unsigned long& value,
   value -= elapsedMs;
 }
 
-bool StateService::isReservoirEmpty() { return _isReservoirEmpty; }
+const bool StateService::isReservoirEmpty() { return _isReservoirEmpty; }
 
-void StateService::setReservoirEmpty(bool isEmpty) {
+const void StateService::setReservoirEmpty(bool isEmpty) {
   if (isEmpty == _isReservoirEmpty) return;  // No state change
 
   if (isEmpty) clearAllPumpsTimeQueued();
@@ -40,8 +47,11 @@ void StateService::setReservoirEmpty(bool isEmpty) {
 }
 
 void StateService::clearAllPumpsTimeQueued() {
-  for (uint8_t i = 0; i < Config::NUMBER_OF_PUMPS; i++)
+  for (uint8_t i = 0; i < Config::NUMBER_OF_PUMPS; i++) {
     _pumpsTimeQueuedMs[i] = 0;
+  }
+
+  _activePumpIndex = -1;
 }
 
 void StateService::setSensorsToRefreshNow() {
@@ -52,9 +62,13 @@ void StateService::setSensorsToRefreshNow() {
 bool StateService::shouldReservoirSensorRefresh() {
   bool refreshNow = _reservoirTimeToRefreshMs == 0;
 
-  if (refreshNow)
-    _reservoirTimeToRefreshMs =
-        Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC * 1000;
+  if (refreshNow) {
+    unsigned long timeToNextRefreshSec =
+        (shouldAnyPumpRun())
+            ? Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC_DURING_CYCLE
+            : Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC_OUTSIDE_CYCLE;
+    _reservoirTimeToRefreshMs = timeToNextRefreshSec * 1000;
+  }
 
   return refreshNow;
 }
@@ -68,6 +82,10 @@ bool StateService::shouldSoilSensorsRefresh() {
   return refreshNow;
 }
 
+const bool StateService::shouldAnyPumpRun() {
+  return _activePumpIndex >= 0;
+}
+
 const bool StateService::shouldPumpRun(uint8_t index) {
   if (index >= Config::NUMBER_OF_PUMPS) {
     Serial.print("err StateService::shouldPumpRun Pump index ");
@@ -77,7 +95,8 @@ const bool StateService::shouldPumpRun(uint8_t index) {
     return false;
   }
 
-  return _pumpsTimeQueuedMs[index] > 0;
+  return (_activePumpIndex == static_cast<int8_t>(index)) &&
+         (_pumpsTimeQueuedMs[index] > 0);
 }
 
 void StateService::queuePumpCycle(uint8_t index) {
@@ -108,10 +127,11 @@ void StateService::_queuePumpTime(uint8_t index, unsigned long timeToAddMs) {
 
   if (ULONG_MAX - _pumpsTimeQueuedMs[index] < timeToAddMs) {
     _pumpsTimeQueuedMs[index] = ULONG_MAX;
-    return;
+  } else {
+    _pumpsTimeQueuedMs[index] += timeToAddMs;
   }
 
-  _pumpsTimeQueuedMs[index] += timeToAddMs;
+  _promoteHighestPriorityPumpIfIdle();
 }
 
 void StateService::clearPumpTimeQueued(uint8_t index) {
@@ -124,4 +144,22 @@ void StateService::clearPumpTimeQueued(uint8_t index) {
   }
 
   _pumpsTimeQueuedMs[index] = 0;
+
+  if (_activePumpIndex == static_cast<int8_t>(index)) {
+    _activePumpIndex = -1;
+  }
+
+  _promoteHighestPriorityPumpIfIdle();
+}
+
+void StateService::_promoteHighestPriorityPumpIfIdle() {
+  if (_activePumpIndex >= 0) return;
+  if (_isReservoirEmpty) return;
+
+  for (uint8_t i = 0; i < Config::NUMBER_OF_PUMPS; i++) {
+    if (_pumpsTimeQueuedMs[i] == 0) continue;
+
+    _activePumpIndex = static_cast<int8_t>(i);
+    return;
+  }
 }

@@ -16,4 +16,6 @@ class Reservoir : public IOObject {
  private:
   uint8_t _echoPin;
   uint8_t _triggerPin;
+
+  unsigned long _getDistanceOnePulseCm();
 };

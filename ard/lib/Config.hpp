@@ -4,17 +4,20 @@
 
 namespace Config {
 
+static constexpr uint8_t NUMBER_OF_PUMPS = 3;
+static constexpr uint8_t NUMBER_OF_SENSORS = 6;
+
 static constexpr unsigned long BUTTON_DEBOUNCE_MS = 50;
 static constexpr unsigned long SOIL_SENSOR_READ_INTERVAL_SEC = 10;
-static constexpr unsigned long RESERVOIR_SENSOR_READ_INTERVAL_SEC = 10;
+static constexpr unsigned long RESERVOIR_SENSOR_READ_INTERVAL_SEC_DURING_CYCLE =
+    1;
+static constexpr unsigned long
+    RESERVOIR_SENSOR_READ_INTERVAL_SEC_OUTSIDE_CYCLE = 10;
 static constexpr unsigned long PUMP_CYCLE_SIZE_SEC[NUMBER_OF_PUMPS] = {
     10,
     10,
     10,
 };
-
-static constexpr uint8_t NUMBER_OF_PUMPS = 3;
-static constexpr uint8_t NUMBER_OF_SENSORS = 6;
 
 static constexpr uint8_t PIN_BUTTON_STOP_PUMPS = 2;
 static constexpr uint8_t PIN_BUTTON_REFRESH_SENSORS = 3;

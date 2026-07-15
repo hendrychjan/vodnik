@@ -14,7 +14,7 @@ void SerialService::_handleCommand(const String& atCommand,
     const bool state = args.substring(spaceIdx + 1).toInt() != 0;
 
     if (state) {
-      _stateService.queuePumpInfiniteCycle(index);
+      _stateService.queuePumpCycle(index);
     } else {
       _stateService.clearPumpTimeQueued(index);
     }

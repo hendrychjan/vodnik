@@ -16,6 +16,7 @@ class StateService : public IOService {
   bool shouldReservoirSensorRefresh();
   bool shouldSoilSensorsRefresh();
 
+  const bool shouldAnyPumpRun();
   void clearAllPumpsTimeQueued();
   void clearPumpTimeQueued(uint8_t index);
   const bool shouldPumpRun(uint8_t index);
@@ -26,12 +27,13 @@ class StateService : public IOService {
   void _subtractElapsed(unsigned long& value, unsigned long elapsedMs);
 
   void _queuePumpTime(uint8_t index, unsigned long time);
+  void _promoteHighestPriorityPumpIfIdle();
 
   bool _isReservoirEmpty = false;
   unsigned long _lastHookMs = 0;
 
   unsigned long _reservoirTimeToRefreshMs =
-      Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC * 1000;
+      Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC_OUTSIDE_CYCLE * 1000;
   unsigned long _soilSensorsTimeToRefreshMs =
       Config::SOIL_SENSOR_READ_INTERVAL_SEC * 1000;
 
@@ -40,4 +42,6 @@ class StateService : public IOService {
       0,
       0,
   };
+
+  int8_t _activePumpIndex = -1;
 };

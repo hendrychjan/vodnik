@@ -18,6 +18,10 @@ void ActivatorService::hook() {
   for (uint8_t i = 0; i < Config::NUMBER_OF_PUMPS; i++) {
     bool shouldRun = _stateService.shouldPumpRun(i);
     bool pumpStateChanged = _pumpRelays[i].toggle(shouldRun);
-    if (pumpStateChanged) printPumpState(i, shouldRun);
+    if (pumpStateChanged) {
+      printPumpState(i, shouldRun);
+
+      if (shouldRun) _stateService.setSensorsToRefreshNow();
+    }
   }
 }

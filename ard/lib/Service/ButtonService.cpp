@@ -19,7 +19,7 @@ void ButtonService::hook() {
 
   for (uint8_t i = 0; i < Config::NUMBER_OF_PUMPS; i++) {
     if (_pumpOverrideButtons[i].didActivate()) {
-      _stateService.queuePumpCycle(i);
+      _stateService.queuePumpInfiniteCycle(i);
     }
   }
 }
