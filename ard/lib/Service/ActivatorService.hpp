@@ -17,8 +17,8 @@ class ActivatorService : public IOService {
 
   Activator _reservoirHasWaterLED{Config::PIN_RESERVOIR_HAS_WATER_LED, true};
   Activator _pumpRelays[Config::NUMBER_OF_PUMPS] = {
-      Activator(Config::PIN_RELAY_PUMP_1, false),
-      Activator(Config::PIN_RELAY_PUMP_2, false),
-      Activator(Config::PIN_RELAY_PUMP_3, false),
+      Activator(Config::PIN_RELAY_PUMP_1, false, LOW),
+      Activator(Config::PIN_RELAY_PUMP_2, false, LOW),
+      Activator(Config::PIN_RELAY_PUMP_3, false, LOW),
   };
 };
