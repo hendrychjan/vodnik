@@ -1,0 +1,18 @@
+services:
+  webgw:
+    image: registry.ws.pha.vpn/webgw:v
+    container_name: webgw
+    restart: no
+    environment:
+      PORT: "3001"
+      MQTT_URL: "mqtt://host.docker.internal:1883"
+      MQTT_USERNAME: "test"
+      MQTT_PASSWORD: "pass"
+      SERIAL_DEVICE: "/dev/ttyUSB0"
+      SERIAL_BAUD_RATE: "9600"
+    ports:
+      - "3001:3001"
+    group_add:
+      - "20"
+    devices:
+      - /dev/ttyUSB0:/dev/ttyUSB0
