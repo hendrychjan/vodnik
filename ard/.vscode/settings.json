@@ -1,0 +1,8 @@
+{
+  "chat.tools.terminal.autoApprove": {
+    "/^C:\\\\Users\\\\honza\\\\\\.platformio\\\\penv\\\\Scripts\\\\platformio\\.exe run --environment nanoatmega328old$/": {
+      "approve": true,
+      "matchCommandLine": true
+    }
+  }
+}

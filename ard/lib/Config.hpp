@@ -1,41 +1,53 @@
 #pragma once
 
 #include "Arduino.h"
+#include "Const.hpp"
 
 namespace Config {
 
-static constexpr uint8_t NUMBER_OF_PUMPS = 3;
-static constexpr uint8_t NUMBER_OF_SENSORS = 6;
+#pragma region HW definition
+static constexpr uint8_t NUMBER_OF_PUMPS = 2;
+static constexpr uint8_t NUMBER_OF_SENSORS = 2;
+#pragma endregion
 
-static constexpr unsigned long BUTTON_DEBOUNCE_MS = 50;
+#pragma region Intervals
 static constexpr unsigned long SOIL_SENSOR_READ_INTERVAL_SEC = 10;
-static constexpr unsigned long RESERVOIR_SENSOR_READ_INTERVAL_SEC_DURING_CYCLE =
-    1;
-static constexpr unsigned long
-    RESERVOIR_SENSOR_READ_INTERVAL_SEC_OUTSIDE_CYCLE = 10;
+static constexpr unsigned long RESERVOIR_IN_CYCLE_INTERVAL_SEC = 1;
+static constexpr unsigned long RESERVOIR_OUT_CYCLE_INTERVAL_SEC = 10;
 static constexpr unsigned long PUMP_CYCLE_SIZE_SEC[NUMBER_OF_PUMPS] = {
     10,
     10,
-    10,
+};
+#pragma endregion
+
+#pragma region Pins
+static constexpr uint8_t PIN_RESERVOIR_HAS_WATER_LED = 13;
+static constexpr uint8_t PIN_BUTTON_REFRESH_SENSORS = A6;
+static constexpr uint8_t PIN_BUTTON_STOP_PUMPS = A7;
+
+static constexpr uint8_t PIN_MUX_SELECT[Const::MUX_SELECT_SIZE] = {
+    A0,
+    A1,
+    A2,
+    A3,
+};
+static constexpr uint8_t PIN_MUX_DATA = A5;
+static constexpr uint8_t PIN_MUX_ENABLE = A4;
+
+static constexpr uint8_t MUX_PIN_BUTTON_PUMP_OVERRIDE[NUMBER_OF_PUMPS] = {
+    14,
+    15,
+};
+static constexpr uint8_t MUX_PIN_SOIL_SENSOR[NUMBER_OF_SENSORS] = {
+    0,
+    1,
 };
 
-static constexpr uint8_t PIN_BUTTON_STOP_PUMPS = 2;
-static constexpr uint8_t PIN_BUTTON_REFRESH_SENSORS = 3;
-static constexpr uint8_t PIN_BUTTON_PUMP_1_OVERRIDE = 4;
-static constexpr uint8_t PIN_BUTTON_PUMP_2_OVERRIDE = 5;
-static constexpr uint8_t PIN_BUTTON_PUMP_3_OVERRIDE = 6;
-static constexpr uint8_t PIN_RESERVOIR_HAS_WATER_LED = 13;
-static constexpr uint8_t PIN_RELAY_PUMP_1 = 7;
-static constexpr uint8_t PIN_RELAY_PUMP_2 = 8;
-static constexpr uint8_t PIN_RELAY_PUMP_3 = 9;
-static constexpr uint8_t PIN_DIST_ECHO = 12;
-static constexpr uint8_t PIN_DIST_TRIG = 11;
-static constexpr uint8_t PIN_SOIL_SENSOR_1 = A1;
-static constexpr uint8_t PIN_SOIL_SENSOR_2 = A2;
-static constexpr uint8_t PIN_SOIL_SENSOR_3 = A3;
-static constexpr uint8_t PIN_SOIL_SENSOR_4 = A4;
-static constexpr uint8_t PIN_SOIL_SENSOR_5 = A5;
-static constexpr uint8_t PIN_SOIL_SENSOR_6 = A6;
+static constexpr uint8_t PIN_PUMP_RELAY[NUMBER_OF_PUMPS] = {2, 3};
+
+static constexpr uint8_t PIN_DIST_ECHO = 11;
+static constexpr uint8_t PIN_DIST_TRIG = 12;
+#pragma endregion
 
 static constexpr uint8_t RESERVOIR_EMPTY_CM = 100;
 

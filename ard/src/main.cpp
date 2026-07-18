@@ -1,16 +1,13 @@
 #include "Arduino.h"
 #include "StateService.hpp"
-#include "ButtonService.hpp"
-#include "ActivatorService.hpp"
-#include "SensorService.hpp"
 #include "SerialService.hpp"
-#include "Reservoir.hpp"
+#include "InputService.hpp"
+#include "OutputService.hpp"
 
 StateService stateService;
 SerialService serialService(stateService);
-ButtonService buttonService(stateService);
-SensorService sensorService(stateService);
-ActivatorService activatorService(stateService);
+InputService inputService(stateService);
+OutputService outputService(stateService);
 
 
 void setup() {
@@ -18,15 +15,13 @@ void setup() {
 
   stateService.setup();
   serialService.setup();
-  buttonService.setup();
-  sensorService.setup();
-  activatorService.setup();
+  inputService.setup();
+  outputService.setup();
 }
 
 void loop() {
   stateService.hook();
   serialService.hook();
-  buttonService.hook();
-  sensorService.hook();
-  activatorService.hook();
+  inputService.hook();
+  outputService.hook();
 }

@@ -1,4 +1,4 @@
-#include "ActivatorService.hpp"
+#include "OutputService.hpp"
 
 void printPumpState(uint8_t index, bool state) {
   Serial.print("pump ");
@@ -6,13 +6,13 @@ void printPumpState(uint8_t index, bool state) {
   Serial.println(state ? " 1" : " 0");
 }
 
-void ActivatorService::setup() {
+void OutputService::setup() {
   _reservoirHasWaterLED.setup();
 
   for (auto& pumpRelay : _pumpRelays) pumpRelay.setup();
 }
 
-void ActivatorService::hook() {
+void OutputService::hook() {
   _reservoirHasWaterLED.toggle(!_stateService.isReservoirEmpty());
 
   for (uint8_t i = 0; i < Config::NUMBER_OF_PUMPS; i++) {

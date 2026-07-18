@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../Config.hpp"
+#include "../Const.hpp"
 #include "Arduino.h"
 #include "IOObject.hpp"
 
@@ -10,6 +10,7 @@ class Button : public IOObject {
 
   void setup() override;
 
+  bool isPressed();
   bool didActivate();
 
  private:

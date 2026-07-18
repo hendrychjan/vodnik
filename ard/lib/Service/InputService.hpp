@@ -4,13 +4,15 @@
 #include "Arduino.h"
 #include "Button.hpp"
 #include "IOService.hpp"
+#include "Mux.hpp"
+#include "Reservoir.hpp"
 #include "StateService.hpp"
 
 /// @brief Adds event hooks for physical buttons and updates states in
 /// StateService upon button press
-class ButtonService : public IOService {
+class InputService : public IOService {
  public:
-  ButtonService(StateService& stateService) : _stateService(stateService) {}
+  InputService(StateService& stateService) : _stateService(stateService) {}
 
   void setup() override;
   void hook() override;
@@ -20,9 +22,7 @@ class ButtonService : public IOService {
 
   Button _stopAllPumpsButton{Config::PIN_BUTTON_STOP_PUMPS};
   Button _refreshSensorsButton{Config::PIN_BUTTON_REFRESH_SENSORS};
-  Button _pumpOverrideButtons[Config::NUMBER_OF_PUMPS] = {
-      Button(Config::PIN_BUTTON_PUMP_1_OVERRIDE),
-      Button(Config::PIN_BUTTON_PUMP_2_OVERRIDE),
-      Button(Config::PIN_BUTTON_PUMP_3_OVERRIDE),
-  };
+  Reservoir _reservoir{Config::PIN_DIST_ECHO, Config::PIN_DIST_TRIG};
+  Mux _mux{Config::PIN_MUX_SELECT, Config::PIN_MUX_DATA,
+           Config::PIN_MUX_ENABLE};
 };

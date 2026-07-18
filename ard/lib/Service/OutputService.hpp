@@ -5,9 +5,9 @@
 #include "IOService.hpp"
 #include "StateService.hpp"
 
-class ActivatorService : public IOService {
+class OutputService : public IOService {
  public:
-  ActivatorService(StateService& stateService) : _stateService(stateService) {}
+  OutputService(StateService& stateService) : _stateService(stateService) {}
 
   void setup() override;
   void hook() override;
@@ -17,8 +17,7 @@ class ActivatorService : public IOService {
 
   Activator _reservoirHasWaterLED{Config::PIN_RESERVOIR_HAS_WATER_LED, true};
   Activator _pumpRelays[Config::NUMBER_OF_PUMPS] = {
-      Activator(Config::PIN_RELAY_PUMP_1, false, LOW),
-      Activator(Config::PIN_RELAY_PUMP_2, false, LOW),
-      Activator(Config::PIN_RELAY_PUMP_3, false, LOW),
+      Activator(Config::PIN_PUMP_RELAY[0], false, LOW),
+      Activator(Config::PIN_PUMP_RELAY[1], false, LOW),
   };
 };

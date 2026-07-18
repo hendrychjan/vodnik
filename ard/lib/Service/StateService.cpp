@@ -65,8 +65,8 @@ bool StateService::shouldReservoirSensorRefresh() {
   if (refreshNow) {
     unsigned long timeToNextRefreshSec =
         (shouldAnyPumpRun())
-            ? Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC_DURING_CYCLE
-            : Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC_OUTSIDE_CYCLE;
+            ? Config::RESERVOIR_IN_CYCLE_INTERVAL_SEC
+            : Config::RESERVOIR_OUT_CYCLE_INTERVAL_SEC;
     _reservoirTimeToRefreshMs = timeToNextRefreshSec * 1000;
   }
 

@@ -33,12 +33,11 @@ class StateService : public IOService {
   unsigned long _lastHookMs = 0;
 
   unsigned long _reservoirTimeToRefreshMs =
-      Config::RESERVOIR_SENSOR_READ_INTERVAL_SEC_OUTSIDE_CYCLE * 1000;
+      Config::RESERVOIR_OUT_CYCLE_INTERVAL_SEC * 1000;
   unsigned long _soilSensorsTimeToRefreshMs =
       Config::SOIL_SENSOR_READ_INTERVAL_SEC * 1000;
 
   unsigned long _pumpsTimeQueuedMs[Config::NUMBER_OF_PUMPS] = {
-      0,
       0,
       0,
   };
